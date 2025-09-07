@@ -46,3 +46,23 @@ body{
 .ring{box-shadow:0 0 0 3px var(--ring)}
 .round-2xl{border-radius:1rem}
 .section{padding-bottom:5.5rem} /* место под нижнюю навигацию */
+
+
+.topbar{
+  position:sticky; top:0; z-index:1030;
+  background:rgba(13,16,24,.75); backdrop-filter: blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.top-title{ font-weight:600; letter-spacing:.2px; }
+.brand .dot{
+  width:12px;height:12px;border-radius:50%;
+  background:linear-gradient(45deg,var(--brand),var(--brand-2));
+  box-shadow:0 0 16px var(--ring);
+}
+.icon-btn{
+  display:grid; place-items:center;
+  width:38px; height:38px; border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.03);
+}
+.icon-btn:hover{ background:rgba(255,255,255,.07); }

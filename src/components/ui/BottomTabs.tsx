@@ -8,7 +8,7 @@ export default function BottomTabs(){
     {href:"/", icon:"bi-house", label:"Дом"},
     {href:"/week", icon:"bi-calendar-week", label:"Неделя"},
     {href:"/recipes", icon:"bi-journal-text", label:"Рецепты"},
-    {href:"/shopping", icon:"bi-bag-check", label:"Покупки"},
+    {href:"/products", icon:"bi-bag-check", label:"Продукты"},
     {href:"/settings", icon:"bi-gear", label:"Настройки"},
   ];
   return (

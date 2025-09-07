@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@zxing/browser": "^0.1.5",
     "bcryptjs": "^3.0.2",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
@@ -22,6 +23,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/web-push": "^3.6.4",
     "typescript": "^5"
   }
 }

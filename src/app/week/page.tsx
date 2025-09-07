@@ -1,4 +1,4 @@
-import TopNav from "@/components/ui/TopNav";
+import TopNav from "@/components/ui/TopBar";
 import BottomTabs from "@/components/ui/BottomTabs";
 
 export default function WeekPage(){
