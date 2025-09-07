@@ -1,21 +1,38 @@
-// src/app/api/inventory/[id]/route.ts  (DELETE, PATCH qty)
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/mongo";
-import { ObjectId } from "mongodb";
 import { requireUserId } from "@/lib/auth-helpers";
+import { ObjectId } from "mongodb";
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export const dynamic = "force-dynamic";
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const userId = await requireUserId();
+  const { id } = await params;
+
   const d = await db();
-  await d.collection("inventory").deleteOne({ _id: new ObjectId(params.id), userId });
+  await d.collection("inventory").deleteOne({ _id: new ObjectId(id), userId });
+
   return NextResponse.json({ ok: true });
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const userId = await requireUserId();
-  const { qty } = await req.json();
+  const { id } = await params;
+  const body = await req.json();
+
   const d = await db();
-  await d.collection("inventory")
-         .updateOne({ _id: new ObjectId(params.id), userId }, { $set: { qty } });
+  await d
+    .collection("inventory")
+    .updateOne(
+      { _id: new ObjectId(id), userId },
+      { $set: { ...body, updatedAt: new Date() } }
+    );
+
   return NextResponse.json({ ok: true });
 }
