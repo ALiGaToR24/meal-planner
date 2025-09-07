@@ -1,42 +1,48 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root{
+  --brand:#8a7cff; --brand-2:#00e0b8; --ink:#e9ebf0; --muted:#9aa3b2;
+  --bg:#0b0d12; --panel:#121622; --panel-2:#1a2030; --ring: rgba(138,124,255,.35);
+}
+html,body{height:100%}
+body{
+  background: radial-gradient(1000px 600px at 20% -10%, rgba(138,124,255,.12), transparent),
+              radial-gradient(900px 600px at 110% 10%, rgba(0,224,184,.08), transparent),
+              var(--bg);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+.container-narrow{max-width:980px;margin:0 auto;padding:1rem}
+.card.frost {
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.03);
+  backdrop-filter: blur(6px);
+}
+.badge-soft{background:rgba(138,124,255,.18); color:#dcd7ff; border:1px solid rgba(138,124,255,.35)}
+.btn-brand{
+  --bs-btn-bg:var(--brand); --bs-btn-border-color:var(--brand);
+  --bs-btn-hover-bg:#7468ff; --bs-btn-hover-border-color:#7468ff;
+  --bs-btn-active-bg:#6a5cff;
+  box-shadow:0 6px 20px rgba(138,124,255,.35);
+}
+.navbar-glass{
+  background:rgba(13,16,24,.55); backdrop-filter: blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.bottom-nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:1030;
+  background:rgba(13,16,24,.75);backdrop-filter: blur(10px);
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.bottom-nav a{color:var(--muted); text-decoration:none}
+.bottom-nav a.active{color:var(--ink)}
+.icon-dot{
+  width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:.4rem;
+  background:linear-gradient(45deg,var(--brand),var(--brand-2));
+  box-shadow: 0 0 16px var(--ring);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
+/* удобные утилиты */
+.text-muted{color:var(--muted)!important}
+.ring{box-shadow:0 0 0 3px var(--ring)}
+.round-2xl{border-radius:1rem}
+.section{padding-bottom:5.5rem} /* место под нижнюю навигацию */
