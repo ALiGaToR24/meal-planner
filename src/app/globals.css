@@ -66,3 +66,27 @@ body{
   background:rgba(255,255,255,.03);
 }
 .icon-btn:hover{ background:rgba(255,255,255,.07); }
+
+.overlay-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1060;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,.55); /* фон за формой */
+}
+
+.modal-sheet {
+  width: min(640px, 92vw);
+  background: rgba(20,22,30,.98);
+  color: #fff;
+  border-radius: 1rem;
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 12px 40px rgba(0,0,0,.45);
+}
+
+/* опционально: кнопки/инпуты выглядят аккуратно на мобиле */
+.modal-sheet .form-control,
+.modal-sheet .form-select { background-color: rgba(255,255,255,.06); color:#fff; }
+.recipe-card { min-height: 146px; } /* прикинь высоту под твой контент */
+.object-fit-cover { object-fit: cover; }

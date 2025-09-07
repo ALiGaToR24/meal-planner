@@ -1,0 +1,19 @@
+{
+  "shortcuts": [
+    {
+      "name": "Сегодня",
+      "url": "/",
+      "icons": [{ "src": "/icons/today.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Неделя",
+      "url": "/week",
+      "icons": [{ "src": "/icons/week.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Продукты",
+      "url": "/products",
+      "icons": [{ "src": "/icons/products.png", "sizes": "192x192" }]
+    }
+  ]
+}

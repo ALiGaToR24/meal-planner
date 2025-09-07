@@ -1,47 +1,87 @@
-import TopNav from "@/components/ui/TopBar";
+"use client";
+import TopBar from "@/components/ui/TopBar";
 import BottomTabs from "@/components/ui/BottomTabs";
 import StatCard from "@/components/ui/StatCard";
-import MealCard from "@/components/meal/MealCard";
+import RegisterPush from "@/components/pwa/RegisterPush";
+import TestPushButton from "@/components/pwa/TestPushButton";
+import { useEffect, useMemo, useState } from "react";
 
-export default async function Home() {
-  // пример: можно получить сессию и имя
-  // const session = await getServerSession(authOptions);
-  const email = undefined; // подставь session?.user?.email
+type Meal = { _id:string; type:string; time?:string; recipeId:string; servings:number; eaten?:boolean };
+type Recipe = { _id:string; title:string; ingredients:any[]; image?:string };
+
+export default function Today() {
+  const [meals, setMeals] = useState<Meal[]>([]);
+  const [recipes, setRecipes] = useState<Record<string, Recipe>>({});
+
+  useEffect(()=>{
+    (async ()=>{
+      const [ms, rs] = await Promise.all([
+        fetch("/api/meals/today").then(r=>r.json()),
+        fetch("/api/recipes").then(r=>r.json())
+      ]);
+      setMeals(ms);
+      setRecipes(Object.fromEntries(rs.map((r:any)=>[r._id, r])));
+    })();
+  },[]);
+
+  async function toggleEaten(m: Meal, eaten: boolean){
+    setMeals(prev=> prev.map(x=> x._id===m._id ? {...x, eaten} : x));
+    await fetch("/api/meals/toggle-eaten",{ method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ mealId: m._id, eaten }) });
+  }
+
+  const totals = useMemo(()=>{
+    const kcalFor = (rec?:Recipe)=>{
+      if(!rec) return 0;
+      return rec.ingredients.reduce((acc:any,ing:any)=>{
+        if(!ing.per100) return acc;
+        const factor = (ing.unit==="g"||ing.unit==="ml") ? ing.amount/100 : 1;
+        return acc + (ing.per100.kcal||0)*factor;
+      },0);
+    };
+    const eatenKcal = meals.filter(m=>m.eaten).reduce((s,m)=> s + kcalFor(recipes[m.recipeId]), 0);
+    const plannedKcal = meals.reduce((s,m)=> s + kcalFor(recipes[m.recipeId]), 0);
+    return { eatenKcal: Math.round(eatenKcal), plannedKcal: Math.round(plannedKcal) };
+  },[meals, recipes]);
 
   return (
     <>
-      <TopNav email={email} />
-      <main className="container-narrow section">
-        {/* Hero */}
-        <div className="py-3">
-          <h1 className="h4 mb-1">Привет!</h1>
-          <div className="text-muted">Вот твой план на сегодня 👇</div>
+      <TopBar />
+      <div className="container-narrow section">
+        <div className="py-3 d-flex justify-content-between align-items-center">
+          <div>
+            <h1 className="h4 mb-1">Сегодня</h1>
+            <div className="text-muted">Отмечай «Съел» — я посчитаю калории.</div>
+          </div>
+          <TestPushButton />
         </div>
 
-        {/* Статы */}
         <div className="row g-3 mb-3">
-          <div className="col-6 col-md-3"><StatCard title="Калории" value="1 845" hint="из 2 200" /></div>
-          <div className="col-6 col-md-3"><StatCard title="Белки" value="112 г" hint="цель: 140 г" /></div>
-          <div className="col-6 col-md-3"><StatCard title="Жиры" value="62 г" /></div>
-          <div className="col-6 col-md-3"><StatCard title="Углеводы" value="196 г" /></div>
+          <div className="col-6 col-md-3"><StatCard title="Съедено" value={`${totals.eatenKcal}`} hint="ккал" /></div>
+          <div className="col-6 col-md-3"><StatCard title="Запланировано" value={`${totals.plannedKcal}`} hint="ккал" /></div>
         </div>
 
-        {/* Ближайшие приёмы */}
-        <div className="d-flex align-items-center justify-content-between mb-2">
-          <h2 className="h6 m-0">Сегодня</h2>
-          <a className="btn btn-sm btn-brand" href="/week"><i className="bi bi-calendar-week me-1" />План на неделю</a>
-        </div>
         <div className="vstack gap-3">
-          <MealCard type="Завтрак" title="Овсянка с ягодами" kcal={420} img="/images/breakfast.jpg" />
-          <MealCard type="Обед" title="Курица + рис + салат" kcal={650} img="/images/lunch.jpg" />
-          <MealCard type="Ужин" title="Лосось и овощи" kcal={520} img="/images/dinner.jpg" />
-          <MealCard type="Перекус" title="Йогурт" kcal={180} />
+          {meals.map(m=>{
+            const r = recipes[m.recipeId];
+            return (
+              <div key={m._id} className="card frost round-2xl">
+                <div className="card-body d-flex justify-content-between align-items-center">
+                  <div>
+                    <div className="text-muted small text-uppercase">{m.type}{m.time?` • ${m.time}`:""}</div>
+                    <div className="fw-semibold">{r?.title ?? "—"}</div>
+                  </div>
+                  <button className={`btn btn-sm ${m.eaten?"btn-brand":"btn-outline-light"}`} onClick={()=>toggleEaten(m, !m.eaten)}>
+                    <i className="bi bi-check2-circle me-1"/>Съел
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+          {meals.length===0 && <p className="text-muted">На сегодня ничего не запланировано.</p>}
         </div>
-        <div className="my-4 d-grid">
-          <a href="/shopping" className="btn btn-outline-light"><i className="bi bi-bag-check me-2" />Список покупок</a>
-        </div>
-      </main>
+      </div>
       <BottomTabs />
+      <RegisterPush />
     </>
   );
 }
